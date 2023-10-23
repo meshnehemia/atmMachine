@@ -87,6 +87,16 @@ public class SendInfoToDatabase {
             ex.printStackTrace();
             return false;
         }
+    }
+    public Boolean updateTransaction(String account, String amount) {
+    	
+    	try {
+    		String setInfo = "UPDATE accountsBalance SET Amount='" + amount + "' WHERE account_id='" + account + "'";
+			stm.executeUpdate(setInfo);
+			return true;
+		} catch (SQLException e) {
+			return false;
+		}
     	
     }
 }
