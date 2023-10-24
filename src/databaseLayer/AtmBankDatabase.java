@@ -4,13 +4,13 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
-public class OpeningAndClosingDb {
+public class AtmBankDatabase {
     private String url;
     private String databaseUser;
     private String password;
     private Connection conn;
 
-    public OpeningAndClosingDb(String databaseName, String databaseUser, String databasePassword) {
+    public AtmBankDatabase(String databaseName, String databaseUser, String databasePassword) {
         url = "jdbc:mysql://localhost:3306/" + databaseName;
         this.databaseUser = databaseUser;
         password = databasePassword;
