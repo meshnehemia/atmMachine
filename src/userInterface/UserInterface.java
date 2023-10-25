@@ -7,10 +7,11 @@ import java.awt.GridLayout;
 import javax.swing.*;
 public class UserInterface{
 	private  JFrame frame;
-	private  JPanel panel1 ;
+	public  JPanel panel1 ;
 	public JPanel panel2;
 	public  UserInterface() {
 		frame =new JFrame();
+		frame.setTitle("ATM Machine");
 		frame.setBounds(200, 50, 700, 400);
 		frame.setLayout(new GridLayout());
 		frame.setResizable(false);
@@ -23,6 +24,7 @@ public class UserInterface{
 	}
 	private void panel1settings() {
 		panel1 =new JPanel();
+		panel1.setLayout(null);
 		panel1.setVisible(true);
 		panel1.setBackground(Color.DARK_GRAY);
 	}
