@@ -42,6 +42,7 @@ public class GetInformation {
     public double getBalance(String account) {
         String query = "SELECT Amount FROM accountsBalance WHERE account_id = '" + account + "'";
         try {
+        	stm = this.conn.createStatement();
             result = stm.executeQuery(query);
 
             if (result.next()) {
@@ -59,18 +60,21 @@ public class GetInformation {
         return 0.0;
     }
 
-    public String[] getUserInformation(String userid) {
-        String query = "SELECT * FROM person WHERE user_id = '" + userid + "'";
+    public String[] getUserInformation(int account) {
+        String query = "SELECT * FROM person WHERE account_number = '" + account + "'";
         try {
+        	stm = this.conn.createStatement();
             result = stm.executeQuery(query);
 
             if (result.next()) {
                 String[] information = {
                     result.getString("first_name"),
                     result.getString("second_name"),
-                    result.getString("account_number")
+                    result.getString("account_number"),
+                    result.getString("password"),
+                    result.getString("user_id")
                 };
-                result.close();
+               result.close();
                 return information;
             }
         } catch (SQLException e) {

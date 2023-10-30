@@ -16,7 +16,6 @@ public class AtmBankDatabase {
         password = databasePassword;
         conn = null;
     }
-
     public Connection connectToDatabase() {
         try {
             conn = DriverManager.getConnection(url, databaseUser, password);

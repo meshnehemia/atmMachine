@@ -20,7 +20,7 @@ public class SendInfoToDatabase {
         statement = null;
     }
 
-    public Boolean transactions(String account, double amount, double current_amount, String type, String td_id) {
+    public Boolean transactions(int account, double amount, double current_amount, String type, String td_id) {
         try {
             // Create a table if it doesn't exist
             String q1 = "CREATE TABLE IF NOT EXISTS transaction (" +
@@ -34,7 +34,7 @@ public class SendInfoToDatabase {
 
             String q2 = "INSERT INTO transaction (Account_number, Amount, transaction_id, current_amount, transaction_type) VALUES (?, ?, ?, ?, ?)";
             statement = conn.prepareStatement(q2);
-            statement.setString(1, account);
+            statement.setInt(1, account);
             statement.setDouble(2, amount);
             statement.setString(3, td_id);
             statement.setDouble(4, current_amount);
@@ -47,25 +47,26 @@ public class SendInfoToDatabase {
         }
     }
 
-    public Boolean updateUser(String f_name, String s_name, String user_id, String ac_number, String password) {
+    public Boolean updateUser(String f_name, String s_name, int user_id,int password) {
         try {
             // Create a table if it doesn't exist
-            String q1 = "CREATE TABLE IF NOT EXISTS person (" +
+        	String q1 = "CREATE TABLE IF NOT EXISTS person (" +
                     "first_name varchar(20), " +
                     "second_name varchar(20), " +
-                    "user_id varchar(20), " +
-                    "Account_number varchar(20), " +
-                    "password varchar(20)" +
-                    ")";
+                    "user_id int, " +
+                    "Account_number int AUTO_INCREMENT," +
+                    "password int," +
+                    "primary key (Account_number)" +
+                    ");";
+
             stm.execute(q1);
 
-            String q2 = "INSERT INTO person (first_name, second_name, user_id, Account_number, password) VALUES (?, ?, ?, ?, ?)";
+            String q2 = "INSERT INTO person (first_name, second_name, user_id, password) VALUES (?, ?, ?, ?)";
             statement = conn.prepareStatement(q2);
             statement.setString(1, f_name);
             statement.setString(2, s_name);
-            statement.setString(3, user_id);
-            statement.setString(4, ac_number);
-            statement.setString(5, password);
+            statement.setInt(3, user_id);
+            statement.setInt(4, password);
             statement.executeUpdate();
             return true;
         } catch (SQLException ex) {

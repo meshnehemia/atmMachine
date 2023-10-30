@@ -4,6 +4,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
+import javax.swing.JOptionPane;
+
+import businessLogic.Authotication;
 import userInterface.AtmKeypads;
 import userInterface.AtmScreen;
 import userInterface.UserInterface;
@@ -15,6 +18,14 @@ public class ControllAndInitialize {
 	 private static AtmScreen atsc;
 	 private static String[] keepTrack;
 	 private static int i;
+	 private static int pin ;
+	 private static int account;
+	 private static String fname;
+	 private static String lname;
+	 private static double amount;
+	 private static int id;
+	 private static Authotication aut;
+	 private static String placeholder;
 	private static void panel2s() {
 			userinterface.panel2.add(p2.getPanel1());
 			pressButtons = p2.add_number_buttons();
@@ -22,8 +33,11 @@ public class ControllAndInitialize {
 			userinterface.panel2.revalidate();
 			userinterface.panel1.add(atsc.panelSettings());
 			userinterface.panel1.repaint();
+			aut = new Authotication("ATMdatabase","root","");
 			ButtonsArray();
 			login();
+			placeholder="";
+			
 	}
 	private static void ButtonsArray() {
 		for(int i =0; i < pressButtons.length;i++) {
@@ -45,6 +59,7 @@ public class ControllAndInitialize {
 					fname();
 				}
 				else if(text=="back") {
+					atsc.login().setText("");
 					
 					String option = back();
 					move =false;
@@ -62,20 +77,51 @@ public class ControllAndInitialize {
 					else if(option=="setpassword") {
 						password();
 					}if(option=="success") {
+						i=0;
 						successlogin();
 					}
 				}
-				else if(text=="next") {
+				else if(text=="next" || text =="Enter") {
+					placeholder = atsc.login().getText();
+					atsc.login().setText("");
 					move =true;
+					atsc.login().setText("");
 					String option = position();
 					if(option=="setfirstName") {
-						sname();
+						if(placeholder.length()>0) {
+							aut.setfname(placeholder);
+							placeholder="";
+							sname();
+						}else {
+							JOptionPane.showMessageDialog(null,"name must not be emty");
+						}
 					}
 					else if(option=="setSurName") {
-						id();
+						if(placeholder.length()>0) {
+							aut.setlname(placeholder);
+							placeholder="";
+							id();
+						}else {
+							JOptionPane.showMessageDialog(null,"name must not be emty");
+						}
+							
 					}
 					else if(option=="setpassword") {
-						
+						if(placeholder.length() >= 3) {
+							aut.setPin(Integer.parseInt(placeholder));
+							placeholder ="";
+							boolean saved = aut.savepersonalinformation();
+							if(!saved) {
+								JOptionPane.showMessageDialog(null,"failed try again");
+								login();
+							}else {
+								i=0;
+								signupsuccess();
+								successlogin();
+							}
+						}else {
+							JOptionPane.showMessageDialog(null,"put atleast 4 digits");
+						}
 					}
 					else if(option=="withdraw") {
 						withdrawUserInterfacepin();
@@ -90,38 +136,97 @@ public class ControllAndInitialize {
 						
 					}
 					else if(option=="id") {
-						password();
+						if(placeholder.length() >= 7) {
+							aut.setPin(Integer.parseInt(placeholder));
+							placeholder ="";
+							password();
+						}else {
+							JOptionPane.showMessageDialog(null,"id shoulde be atlease 8 digits");
+						}	
+					}
+					else if(option=="login") {
+						if(placeholder.length()>=1) {
+							aut.setaccount(Integer.parseInt(placeholder));
+							atsc.login().setText("");
+							placeholder ="";
+							pin();
+						}else {
+							JOptionPane.showMessageDialog(null,"your account must not be null");
+						}
 						
 					}
-					if(option=="login") {
-						pin();
+					else if(option=="pin") {
+						if(placeholder.length()>=4) {
+							aut.setPin(Integer.parseInt(placeholder));
+							atsc.login().setText("");
+							placeholder ="";
+							boolean check = aut.login();
+							if(check) {
+								i=0;
+								loginsuccess();
+								successlogin();
+							}else {
+								login();
+								JOptionPane.showMessageDialog(null, "incorrect credetials");
+							}
+							
+						}else {
+							JOptionPane.showMessageDialog(null, "pin must be 4 digits");
+						}
+							
 					}
-					if(option=="pin") {
+					else if(option =="Depositpin") {
+						i=0;
+						depositSuccess();
 						successlogin();
 					}
+					else if(option =="withdrawpin") {
+						i=0;
+						withdrawsuccess();
+						successlogin();
+						}
 				}else if(text=="withdraw"){
-					withdrawUserInterface();
-				}else if(text == "Deposit"){
-					DepositUserInterface();
-				}else if(text=="check balance"){
-					CheckBalanceUserInterface();
-				}
-				
-				
-				else {
-					atsc.login().setText(text);
+						atsc.login().setText(placeholder);
+						withdrawUserInterface();
+					}else if(text == "Deposit"){
+						atsc.login().setText("");
+						DepositUserInterface();
+					}else if(text=="check balance"){
+						atsc.login().setText("");
+						CheckBalanceUserInterface();
+					
+					}else if(text=="log out") {
+						login();
+					}else if(text == "clear") {
+						char [] plc = placeholder.toCharArray();
+						text="";
+						for(int z =0;z<placeholder.length()-1;z++) {
+							text += plc[z];
+						}
+						placeholder=text;
+						atsc.login().setText(text);
+					}
+					else {
+					placeholder += text;
+					atsc.login().setText(placeholder);
 				}
 			}
 		});
 	}
 	private static JButton[]  transfer;
 	private static void login() {
+		i=0;
 		keep("login");
+		closescreen();
 		pressButtons =atsc.LoginScreen();
 		transfer = atsc.LoginScreen();
 		pressButtons[0].setText("sign up");
+		pressButtons[1].setVisible(true);
 		ButtonsArray();
 		
+	}
+	private static void loginsuccess() {
+		JOptionPane.showMessageDialog(null, "logged in successful");
 	}
 	
 	private static void pin() {
@@ -135,6 +240,7 @@ public class ControllAndInitialize {
 	}
 	private static void successlogin() {
 		keep("success");
+		closescreen();
 		atsc.login().setText("accountnumber");
 		atsc.label().setText("logged in");
 		transfer[0].setText("log out");
@@ -155,6 +261,9 @@ public class ControllAndInitialize {
 		keep("withdrawpin");
 		atsc.label().setText("Enter pin to withdraw");
 		atsc.login().setText("");
+	}
+	private static void withdrawsuccess() {
+		 JOptionPane.showMessageDialog(null, "you have withdraw successfull ");
 	}
 	private static void DepositUserInterface(){
 		keep("deposit");
@@ -183,6 +292,7 @@ public class ControllAndInitialize {
 
 	private static void fname() {
 		keep("setfirstName");
+		openscreen();
 		atsc.login().setText("");
 		atsc.label().setText("enter your FirstName");
 		pressButtons[0].setText("back");
@@ -191,6 +301,7 @@ public class ControllAndInitialize {
 	}
 	private static void sname() {
 		keep("setSurName");
+		openscreen();
 		atsc.login().setText("");
 		atsc.label().setText("enter your SurName");
 		pressButtons[0].setText("back");
@@ -199,6 +310,7 @@ public class ControllAndInitialize {
 	}
 	private static void id() {
 		keep("id");
+		closescreen();
 		atsc.login().setText("");
 		atsc.label().setText("enter your Id");
 		pressButtons[0].setText("back");
@@ -213,9 +325,12 @@ public class ControllAndInitialize {
 		pressButtons[1].setText("next");
 		userinterface.panel1.repaint();
 	}
-	
-	
-	
+	private static void signupsuccess() {
+		JOptionPane.showMessageDialog(null, "you have created Account successfully ");
+	}
+	private static void depositSuccess() {
+		 JOptionPane.showMessageDialog(null, "you have deposited successfull ");
+	}
 	private static void keep(String string) {
 		i+=1;
 		keepTrack[i] =string;
@@ -229,6 +344,12 @@ public class ControllAndInitialize {
 			return keepTrack[i];
 		}
 	}
+	private static void closescreen() {
+		atsc.login().setEditable(false);
+	}
+	private static void openscreen() {
+		atsc.login().setEditable(true);
+	}
 	private static String position() {
 		return keepTrack[i];
 	}
@@ -238,6 +359,9 @@ public class ControllAndInitialize {
 		userinterface =new UserInterface();
 		p2 =new AtmKeypads();
 		atsc =new AtmScreen();
+		atsc.panelSettings().repaint();
+		p2.getPanel1().revalidate();
+		userinterface.panel2.revalidate();
 		panel2s();	
 	}
 
