@@ -126,27 +126,40 @@ public class ControllAndInitialize {
 						}
 					}
 					else if(option=="withdraw") {
+						if(placeholder.length()>0) {
 							amount = Double.parseDouble(placeholder);
 							placeholder = "";
 							withdrawUserInterfacepin();
+						}else {
+							JOptionPane.showMessageDialog(null, "amount cant be null");
+						}
 					}
 					else if(option=="deposit") {
+						if(placeholder.length()>0) {
 						amount = Integer.parseInt(placeholder);
 						placeholder ="";
 						if(amount>=0)
 						DepositUserInterfacepin();
+					}else {
+						JOptionPane.showMessageDialog(null, "amount cant be null");
+					}
 						
 					}
 					else if(option=="checkbalance") {
-						i=0;
-						pin = Integer.parseInt(placeholder);
-						boolean success = aut.pinValidation(pin);
-						if(success) {
-							atsc.login().setText("");
-							Checkbalance(aut.checkBalance());
+						if(placeholder.length()>=4) {
+							i=0;
+							pin = Integer.parseInt(placeholder);
+							placeholder ="";
+							boolean success = aut.pinValidation(pin);
+							if(success) {
+								atsc.login().setText("");
+								Checkbalance(aut.checkBalance());
+							}else {
+								JOptionPane.showMessageDialog(null, "Incorrect pin please login again to continue");
+								login();
+							}
 						}else {
-							JOptionPane.showMessageDialog(null, "Incorrect pin please login again to continue");
-							login();
+							JOptionPane.showMessageDialog(null, "pin must be 4 digit or more ");
 						}
 					}
 					else if(option=="id") {
@@ -191,8 +204,10 @@ public class ControllAndInitialize {
 							
 					}
 					else if(option =="Depositpin") {
+						if(placeholder.length()>=4) {
 						i=0;
 						pin = Integer.parseInt(placeholder);
+						placeholder ="";
 						boolean success = aut.pinValidation(pin);
 						if(success) {
 							if(aut.deposit(amount)) {
@@ -206,10 +221,15 @@ public class ControllAndInitialize {
 							JOptionPane.showMessageDialog(null, "err occured");
 							login();
 						}
+						}else {
+							JOptionPane.showMessageDialog(null, "pin must be a 4 digit or more");
+						}
 					}
 					else if(option =="withdrawpin") {
+						if(placeholder.length()>=4) {
 						i=0;
 						pin = Integer.parseInt(placeholder);
+						placeholder="";
 						boolean success = aut.pinValidation(pin);
 						if(success) {
 							if(aut.withdraw(amount)) {
@@ -222,6 +242,10 @@ public class ControllAndInitialize {
 						}else {
 							JOptionPane.showMessageDialog(null, "Incorrect pin please login again to continue");
 							login();
+						}
+						}
+						else {
+							JOptionPane.showMessageDialog(null, "pin must be a 4 digit or more");
 						}
 					}
 				}else if(text=="withdraw"){
@@ -262,6 +286,9 @@ public class ControllAndInitialize {
 		pressButtons[0].setText("sign up");
 		pressButtons[1].setVisible(true);
 		ButtonsArray();
+		userinterface.panel2.remove(p2.getPanel2());
+		userinterface.panel2.repaint();
+		userinterface.panel1.repaint();
 		userinterface.panel1.repaint();
 		
 	}
@@ -282,7 +309,7 @@ public class ControllAndInitialize {
 		keep("success");
 		closescreen();
 		atsc.login().setText(Integer.toString(acc));
-		atsc.label().setText("logged in");
+		atsc.label().setText("account number is ");
 		transfer[0].setText("log out");
 		transfer[1].setVisible(false);
 		pressButtons=p2.transactionsBtns();
