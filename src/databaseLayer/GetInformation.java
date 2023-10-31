@@ -18,6 +18,7 @@ public class GetInformation {
         try {
             stm = this.conn.createStatement();
         } catch (SQLException e) {
+        	JOptionPane.showMessageDialog(null, "no connections");
             return;
         }
         result = null;
@@ -34,7 +35,7 @@ public class GetInformation {
                 return stms;
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+           JOptionPane.showMessageDialog(null, "no connections");
         } finally {
             closeResultSetAndStatement();
         }
@@ -98,7 +99,7 @@ public class GetInformation {
                 stm.close();
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+          
         }
     }
     public String[] getUser(int id ,int pin) {
@@ -119,7 +120,7 @@ public class GetInformation {
                 return information;
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            JOptionPane.showMessageDialog(null, "no connections found");
         } finally {
             closeResultSetAndStatement();
         }

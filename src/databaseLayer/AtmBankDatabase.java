@@ -15,6 +15,7 @@ public class AtmBankDatabase {
 
     public AtmBankDatabase(String databaseName, String databaseUser, String databasePassword) {
         url = "jdbc:mysql://localhost:3306/" + databaseName;
+        this.databaseName =databaseName;
         this.databaseUser = databaseUser;
         password = databasePassword;
         conn = null;
@@ -24,7 +25,7 @@ public class AtmBankDatabase {
             conn = DriverManager.getConnection(url, databaseUser, password);
             return conn;
         } catch (SQLException e) {
-        	JOptionPane.showMessageDialog(null,"no database " +databaseName);
+        	JOptionPane.showMessageDialog(null,"no database " +databaseName+"\n or change the constraits to your database \nin ControllAndInitialize.java line 37 \n to match the database\n databasename , useraccount and password thank you in advance");
             return null;
         }
     }

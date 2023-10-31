@@ -118,6 +118,14 @@ public class ControllAndInitialize {
 							}else {
 								i=0;
 								acc = aut.update();
+								while(aut.checkBalance()==0.0) {
+									try {
+										double amount =Integer.parseInt(JOptionPane.showInputDialog(null, "your balance is 0.0 please deposit"));
+										aut.deposit(amount);
+									}catch(Exception e) {
+										JOptionPane.showMessageDialog(null, "please enter number");
+									}
+								}
 								signupsuccess();
 								successlogin();
 							}

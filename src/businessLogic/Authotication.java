@@ -2,6 +2,8 @@ package businessLogic;
 
 import java.sql.Connection;
 
+import javax.swing.JOptionPane;
+
 import databaseLayer.AtmBankDatabase;
 import databaseLayer.GetInformation;
 import databaseLayer.SendInfoToDatabase;
@@ -59,13 +61,18 @@ public class Authotication {
 			return false;
 	}
 	private boolean authoticate() {
-		String[]info =getinfo.getUserInformation(this.account);
-		if(info==null){
-			return false;
+		try {
+			String[]info =getinfo.getUserInformation(this.account);
+			if(info==null){
+				return false;
+			}
+			if(pin==Integer.parseInt(info[3])) {
+				return true;
+			}
+		}catch(Exception e) {
+			JOptionPane.showMessageDialog(null, "no connections found");
 		}
-		if(pin==Integer.parseInt(info[3])) {
-			return true;
-		}
+		
 		return false;
 	}
 	public boolean login() {

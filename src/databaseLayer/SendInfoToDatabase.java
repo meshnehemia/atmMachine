@@ -17,7 +17,7 @@ public class SendInfoToDatabase {
         try {
             stm = conn.createStatement();
         } catch (SQLException e) {
-            e.printStackTrace();
+            JOptionPane.showMessageDialog(null,"no connections");
         }
         statement = null;
     }
@@ -88,6 +88,7 @@ public class SendInfoToDatabase {
     		
     	}catch (SQLException ex) {
             JOptionPane.showMessageDialog(null,"something WentWrong");
+            System.out.println(ex);
             return false;
         }
     }
