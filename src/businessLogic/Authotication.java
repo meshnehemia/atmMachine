@@ -5,6 +5,7 @@ import java.sql.Connection;
 import databaseLayer.AtmBankDatabase;
 import databaseLayer.GetInformation;
 import databaseLayer.SendInfoToDatabase;
+import userInterface.AtmScreen;
 
 public class Authotication {
 	 private  int pin ;
@@ -14,17 +15,22 @@ public class Authotication {
 	 private  double amount;
 	 private  int id;
 	 private AtmBankDatabase conn;
+	 private Transactions transact;
 	 private Connection connection;
 	 private SendInfoToDatabase send;
+	 private Withdraw with;
 	 private GetInformation getinfo;
 	public Authotication(String database,String username,String password) {
 		try {
+			
 			conn =new AtmBankDatabase(database,username,password);
 			connection = conn.connectToDatabase();
 			send = new SendInfoToDatabase(connection);
+			transact = new Transactions(connection);
 			getinfo =new GetInformation(connection);
+			with =new Withdraw(0,null,null,0,connection);
 		}catch(Exception e) {
-			System.out.println("failed to connect to database");
+			return;
 		}
 	}
 	public void setPin(int pin) {
@@ -46,7 +52,11 @@ public class Authotication {
 		this.id =id;
 	}
 	public boolean savepersonalinformation () {
-		 return send.updateUser(fname, lname,id, pin);
+			if(send.updateUser(fname, lname,id, pin)){
+				update();
+				return send.transaction(account, 0.00);
+			};
+			return false;
 	}
 	private boolean authoticate() {
 		String[]info =getinfo.getUserInformation(this.account);
@@ -63,6 +73,30 @@ public class Authotication {
 	}
 	public int account() {
 		return this.account;
+	}
+	public int update() {
+		String [] info =getinfo.getUser(id ,pin);
+		setfname(info[0]);
+		setaccount(Integer.parseInt(info[2]));
+		setlname(info[1]);
+		return Integer.parseInt(info[2]);
+		
+	}
+	public boolean pinValidation(int pin) {
+		if(this.pin == pin) {
+			return true;
+		}
+		return false;
+	}
+	public boolean deposit(double amount) {
+		return transact.deposit(account, amount);
+	}
+	public double checkBalance() {
+		return transact.checkbalance(account);
+	}
+	public boolean withdraw(double amount) {
+		return with.withdraw(this.account,amount);
+		
 	}
 
 }

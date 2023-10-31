@@ -2,6 +2,9 @@ package databaseLayer;
 
 import java.sql.Connection;
 import java.sql.Statement;
+
+import javax.swing.JOptionPane;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -39,7 +42,7 @@ public class GetInformation {
         return null;
     }
 
-    public double getBalance(String account) {
+    public double getBalance(int account) {
         String query = "SELECT Amount FROM accountsBalance WHERE account_id = '" + account + "'";
         try {
         	stm = this.conn.createStatement();
@@ -52,7 +55,7 @@ public class GetInformation {
                
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+        	JOptionPane.showMessageDialog(null,"something went Wrong");
         } finally {
             closeResultSetAndStatement();
         }
@@ -78,7 +81,7 @@ public class GetInformation {
                 return information;
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+        	JOptionPane.showMessageDialog(null,"something went wrong");
         } finally {
             closeResultSetAndStatement();
         }
@@ -97,5 +100,30 @@ public class GetInformation {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+    public String[] getUser(int id ,int pin) {
+        String query = "SELECT * FROM person WHERE user_id = '" + id + "' and password ='" + pin + "'";
+        try {
+        	stm = this.conn.createStatement();
+            result = stm.executeQuery(query);
+
+            if (result.next()) {
+                String[] information = {
+                    result.getString("first_name"),
+                    result.getString("second_name"),
+                    result.getString("account_number"),
+                    result.getString("password"),
+                    result.getString("user_id")
+                };
+               result.close();
+                return information;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            closeResultSetAndStatement();
+        }
+
+        return null;
     }
 }

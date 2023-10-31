@@ -24,6 +24,7 @@ public class ControllAndInitialize {
 	 private static String lname;
 	 private static double amount;
 	 private static int id;
+	 private static int acc;
 	 private static Authotication aut;
 	 private static String placeholder;
 	private static void panel2s() {
@@ -116,6 +117,7 @@ public class ControllAndInitialize {
 								login();
 							}else {
 								i=0;
+								acc = aut.update();
 								signupsuccess();
 								successlogin();
 							}
@@ -124,16 +126,28 @@ public class ControllAndInitialize {
 						}
 					}
 					else if(option=="withdraw") {
-						withdrawUserInterfacepin();
-						
+							amount = Double.parseDouble(placeholder);
+							placeholder = "";
+							withdrawUserInterfacepin();
 					}
 					else if(option=="deposit") {
+						amount = Integer.parseInt(placeholder);
+						placeholder ="";
+						if(amount>=0)
 						DepositUserInterfacepin();
 						
 					}
 					else if(option=="checkbalance") {
-						Checkbalance();
-						
+						i=0;
+						pin = Integer.parseInt(placeholder);
+						boolean success = aut.pinValidation(pin);
+						if(success) {
+							atsc.login().setText("");
+							Checkbalance(aut.checkBalance());
+						}else {
+							JOptionPane.showMessageDialog(null, "Incorrect pin please login again to continue");
+							login();
+						}
 					}
 					else if(option=="id") {
 						if(placeholder.length() >= 7) {
@@ -163,6 +177,7 @@ public class ControllAndInitialize {
 							boolean check = aut.login();
 							if(check) {
 								i=0;
+								acc = aut.update();
 								loginsuccess();
 								successlogin();
 							}else {
@@ -177,16 +192,40 @@ public class ControllAndInitialize {
 					}
 					else if(option =="Depositpin") {
 						i=0;
-						depositSuccess();
-						successlogin();
+						pin = Integer.parseInt(placeholder);
+						boolean success = aut.pinValidation(pin);
+						if(success) {
+							if(aut.deposit(amount)) {
+								depositSuccess();
+								successlogin();
+							}else {
+								JOptionPane.showMessageDialog(null, "erro occurred please try again");
+							}
+							
+						}else {
+							JOptionPane.showMessageDialog(null, "err occured");
+							login();
+						}
 					}
 					else if(option =="withdrawpin") {
 						i=0;
-						withdrawsuccess();
-						successlogin();
+						pin = Integer.parseInt(placeholder);
+						boolean success = aut.pinValidation(pin);
+						if(success) {
+							if(aut.withdraw(amount)) {
+								withdrawsuccess();
+								successlogin();
+							}else {
+								JOptionPane.showMessageDialog(null, "something went wrong");
+							}
+							
+						}else {
+							JOptionPane.showMessageDialog(null, "Incorrect pin please login again to continue");
+							login();
 						}
+					}
 				}else if(text=="withdraw"){
-						atsc.login().setText(placeholder);
+						atsc.login().setText("");
 						withdrawUserInterface();
 					}else if(text == "Deposit"){
 						atsc.login().setText("");
@@ -223,6 +262,7 @@ public class ControllAndInitialize {
 		pressButtons[0].setText("sign up");
 		pressButtons[1].setVisible(true);
 		ButtonsArray();
+		userinterface.panel1.repaint();
 		
 	}
 	private static void loginsuccess() {
@@ -241,7 +281,7 @@ public class ControllAndInitialize {
 	private static void successlogin() {
 		keep("success");
 		closescreen();
-		atsc.login().setText("accountnumber");
+		atsc.login().setText(Integer.toString(acc));
 		atsc.label().setText("logged in");
 		transfer[0].setText("log out");
 		transfer[1].setVisible(false);
@@ -263,7 +303,7 @@ public class ControllAndInitialize {
 		atsc.login().setText("");
 	}
 	private static void withdrawsuccess() {
-		 JOptionPane.showMessageDialog(null, "you have withdraw successfull ");
+		 JOptionPane.showMessageDialog(null, "you have withdrawn "+ amount + "successfully");
 	}
 	private static void DepositUserInterface(){
 		keep("deposit");
@@ -283,14 +323,17 @@ public class ControllAndInitialize {
 		transfer[0].setText("back");
 	}
 
-	private static void Checkbalance(){
+	private static void Checkbalance(double balance){
 		keep("checkbalancepin");
-		atsc.label().setText("your balance is ");
-		atsc.login().setText("68767876709");
+		atsc.label().setText("Acount "+acc + " balance");
+		atsc.login().setText(Double.toString(balance));
 		transfer[1].setVisible(false);
 	}
 
 	private static void fname() {
+		i=1;
+		keep("login");
+		i=2;
 		keep("setfirstName");
 		openscreen();
 		atsc.login().setText("");
@@ -329,7 +372,7 @@ public class ControllAndInitialize {
 		JOptionPane.showMessageDialog(null, "you have created Account successfully ");
 	}
 	private static void depositSuccess() {
-		 JOptionPane.showMessageDialog(null, "you have deposited successfull ");
+		 JOptionPane.showMessageDialog(null, "you have deposited " + amount + "ksh successfull ");
 	}
 	private static void keep(String string) {
 		i+=1;

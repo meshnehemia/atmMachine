@@ -4,11 +4,14 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 
+import javax.swing.JOptionPane;
+
 public class AtmBankDatabase {
     private String url;
     private String databaseUser;
     private String password;
     private Connection conn;
+    private String databaseName;
 
     public AtmBankDatabase(String databaseName, String databaseUser, String databasePassword) {
         url = "jdbc:mysql://localhost:3306/" + databaseName;
@@ -21,7 +24,7 @@ public class AtmBankDatabase {
             conn = DriverManager.getConnection(url, databaseUser, password);
             return conn;
         } catch (SQLException e) {
-            e.printStackTrace();
+        	JOptionPane.showMessageDialog(null,"no database " +databaseName);
             return null;
         }
     }
@@ -34,7 +37,6 @@ public class AtmBankDatabase {
             connection.close();
             return true;
         } catch (SQLException e) {
-            e.printStackTrace();
             return false;
         }
     }

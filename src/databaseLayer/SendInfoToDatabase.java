@@ -5,6 +5,8 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import javax.swing.JOptionPane;
+
 public class SendInfoToDatabase {
     private Statement stm;
     private PreparedStatement statement;
@@ -74,9 +76,9 @@ public class SendInfoToDatabase {
             return false;
         }
     }
-    public Boolean  transaction(String account, String amount) {
+    public Boolean  transaction(int account, double amount) {
     	try {
-    		String createTableQuery = "CREATE TABLE IF NOT EXIST accountsBalance (" +
+    		String createTableQuery = "CREATE TABLE IF NOT EXISTS accountsBalance (" +
                     "account_id INT PRIMARY KEY," +
                     "Amount DOUBLE)";
     		stm.execute(createTableQuery);
@@ -85,17 +87,18 @@ public class SendInfoToDatabase {
     		return true;
     		
     	}catch (SQLException ex) {
-            ex.printStackTrace();
+            JOptionPane.showMessageDialog(null,"something WentWrong");
             return false;
         }
     }
-    public Boolean updateTransaction(String account, String amount) {
+    public Boolean updateTransaction(int account, double amount) {
     	
     	try {
     		String setInfo = "UPDATE accountsBalance SET Amount='" + amount + "' WHERE account_id='" + account + "'";
 			stm.executeUpdate(setInfo);
 			return true;
 		} catch (SQLException e) {
+			JOptionPane.showMessageDialog(null,"Something went Wrong");
 			return false;
 		}
     	
